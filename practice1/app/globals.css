@@ -1,0 +1,209 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-ink: #0b0b12;
+  --color-ink-2: #12121c;
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-cyan: #22d3ee;
+  --color-indigo: #6366f1;
+  --color-violet: #a855f7;
+  --font-sans: var(--font-noto), system-ui, sans-serif;
+  --font-display: var(--font-chakra), var(--font-noto), sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #0b0b12;
+  color: #e7e7f0;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: #6366f1;
+  color: #fff;
+}
+
+/* 品牌漸層：青 → 靛藍 → 紫 */
+.rgb-text {
+  background: linear-gradient(90deg, #22d3ee, #6366f1 55%, #a855f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.rgb-bg {
+  background: linear-gradient(90deg, #22d3ee, #6366f1 55%, #a855f7);
+}
+
+.rgb-line {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #22d3ee 15%, #6366f1 50%, #a855f7 85%, transparent);
+  box-shadow: 0 0 18px #6366f1, 0 0 40px rgb(168 85 247 / 0.5);
+}
+
+/* 漸層外框：放在 components 層，讓 absolute 等 utility 可以覆蓋 position */
+@layer components {
+  .rgb-border {
+    position: relative;
+  }
+  .rgb-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, #22d3ee, #6366f1 50%, #a855f7);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+/* 主圖四周淡出，融進背景光暈 */
+.hero-fade {
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 55%, transparent 100%);
+}
+
+.outline-word {
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(255 255 255 / 0.09);
+}
+
+.grid-floor {
+  background-image:
+    linear-gradient(rgb(99 102 241 / 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(99 102 241 / 0.18) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 10%, transparent 70%);
+}
+
+.noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+}
+
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 32s linear infinite;
+}
+
+@keyframes hue-sweep {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.animate-sweep {
+  background-size: 200% 200%;
+  animation: hue-sweep 6s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+.animate-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* 捲動進場 */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* 首屏進場：純 CSS，不等 JS */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: none; }
+}
+.fade-up {
+  animation: fade-up 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* 抽獎中獎彩帶 */
+@keyframes burst {
+  0% { transform: translate(0, 0) rotate(0); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translate(var(--x), var(--y)) rotate(var(--r)); opacity: 0; }
+}
+.confetti {
+  animation: burst 1.8s cubic-bezier(0.15, 0.8, 0.3, 1) both;
+}
+
+/* 彈窗開啟動畫 */
+.modal[open] {
+  animation: fade-up 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* 按鈕掃光 */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 35%, rgb(255 255 255 / 0.45) 50%, transparent 65%);
+  transform: translateX(-120%);
+  animation: shine 3.6s ease-in-out infinite;
+}
+@keyframes shine {
+  0%, 55% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+/* 卡片跟著滑鼠的光 */
+.spotlight {
+  background-image: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, -200px),
+    rgb(99 102 241 / 0.18),
+    transparent 60%
+  );
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(400%); }
+}
+.animate-scan {
+  animation: scan 5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-sweep,
+  .animate-glow,
+  .animate-scan,
+  .fade-up,
+  .confetti,
+  .modal[open],
+  .btn-shine::after {
+    animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}

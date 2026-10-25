@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>開始上課囉～～～～～</title>
+  <style>
+    :root {
+      --bg-top: #0b1026;
+      --bg-bottom: #1c2450;
+      --text: #f4f5fb;
+      --muted: #b6bbd6;
+      --accent: #ffb547;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 16px;
+      overflow-x: hidden;
+    }
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      animation: rise 0.8s ease-out;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .tag {
+      display: inline-block;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 4px 16px;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: clamp(36px, 9vw, 64px);
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+    h1 span { color: var(--accent); }
+    p {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.8;
+      margin-bottom: 40px;
+    }
+    button {
+      font: inherit;
+      font-size: 20px;
+      font-weight: 700;
+      color: #1c2450;
+      background: var(--accent);
+      border: none;
+      border-radius: 14px;
+      padding: 16px 40px;
+      cursor: pointer;
+      box-shadow: 0 0 30px rgba(255, 181, 71, 0.45);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 45px rgba(255, 181, 71, 0.7);
+    }
+    button:active { transform: translateY(0); }
+    canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    #stars { z-index: 0; }
+    #fireworks { z-index: 2; }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <canvas id="fireworks"></canvas>
+
+  <main>
+    <div class="tag">AI-Coding 無痛上手</div>
+    <h1>歡迎大家<br><span>我們開始上課囉～～～～～</span></h1>
+    <p>
+      準備好了嗎？今天開始，我們要和 AI 一起寫程式，<br>
+      把想法變成看得見、按得到的作品。
+    </p>
+    <button id="fire">🎆 點我開場</button>
+  </main>
+
+  <script>
+    const stars = document.getElementById("stars");
+    const sctx = stars.getContext("2d");
+    const canvas = document.getElementById("fireworks");
+    const ctx = canvas.getContext("2d");
+    const colors = ["#ff5e5e", "#ffd25e", "#5effa1", "#5ec8ff", "#c55eff", "#ff9a5e"];
+    let rockets = [];
+    let sparks = [];
+    let running = false;
+
+    // 星空背景
+    function drawStars() {
+      sctx.clearRect(0, 0, stars.width, stars.height);
+      for (let n = 0; n < 120; n++) {
+        sctx.globalAlpha = 0.3 + Math.random() * 0.7;
+        sctx.fillStyle = "#ffffff";
+        sctx.beginPath();
+        sctx.arc(Math.random() * stars.width, Math.random() * stars.height, Math.random() * 1.4, 0, Math.PI * 2);
+        sctx.fill();
+      }
+      sctx.globalAlpha = 1;
+    }
+
+    function resize() {
+      stars.width = canvas.width = window.innerWidth;
+      stars.height = canvas.height = window.innerHeight;
+      drawStars();
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    // 煙火
+    function launch() {
+      rockets.push({
+        x: canvas.width * (0.15 + Math.random() * 0.7),
+        y: canvas.height,
+        vy: -(canvas.height / 60) * (0.9 + Math.random() * 0.3),
+        targetY: canvas.height * (0.12 + Math.random() * 0.3),
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+      if (!running) {
+        running = true;
+        requestAnimationFrame(tick);
+      }
+    }
+
+    function explode(x, y, color) {
+      for (let n = 0; n < 90; n++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 1 + Math.random() * 5;
+        sparks.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1,
+          color: Math.random() < 0.8 ? color : "#ffffff"
+        });
+      }
+    }
+
+    function tick() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      rockets = rockets.filter(r => {
+        r.y += r.vy;
+        r.vy *= 0.98;
+        ctx.fillStyle = r.color;
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, 3, 0, Math.PI * 2);
+        ctx.fill();
+        if (r.y <= r.targetY || r.vy > -1) {
+          explode(r.x, r.y, r.color);
+          return false;
+        }
+        return true;
+      });
+
+      sparks = sparks.filter(s => {
+        s.x += s.vx;
+        s.y += s.vy;
+        s.vx *= 0.97;
+        s.vy = s.vy * 0.97 + 0.06;
+        s.life -= 0.012;
+        ctx.globalAlpha = Math.max(s.life, 0);
+        ctx.fillStyle = s.color;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+        return s.life > 0;
+      });
+      ctx.globalAlpha = 1;
+
+      if (rockets.length || sparks.length) {
+        requestAnimationFrame(tick);
+      } else {
+        running = false;
+      }
+    }
+
+    document.getElementById("fire").addEventListener("click", () => {
+      for (let n = 0; n < 8; n++) {
+        setTimeout(launch, n * 300);
+      }
+    });
+  </script>
+</body>
+</html>
