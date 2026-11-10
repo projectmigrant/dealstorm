@@ -208,7 +208,7 @@ export default function Home() {
                 >
                   加入搶先名單
                 </Link>
-                <Link href="#why" className="group flex items-center gap-2 text-white/70 hover:text-white">
+                <Link href="#video" className="group flex items-center gap-2 text-white/70 hover:text-white">
                   看它怎麼洗
                   <span className="transition group-hover:translate-x-1">→</span>
                 </Link>
@@ -263,6 +263,41 @@ export default function Home() {
           ))}
         </div>
       </div>
+
+      {/* VIDEO */}
+      <section id="video" className="mx-auto max-w-7xl scroll-mt-20 px-5 pt-20 sm:px-8 md:pt-28 lg:pt-36">
+        <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+          <Reveal className="lg:col-span-5">
+            <SectionLabel index="▶">SEE IT IN ACTION</SectionLabel>
+            <h2 className="mt-6 text-3xl font-black leading-tight text-white sm:text-5xl">
+              看它怎麼洗，
+              <br />
+              <span className="rgb-text">一次就懂</span>。
+            </h2>
+            <p className="mt-6 max-w-md leading-relaxed text-white/55">
+              放卡、按下 START，剩下的交給牌暴。
+              短短幾秒，帶你看實機洗牌的樣子。
+            </p>
+          </Reveal>
+
+          <Reveal delay={120} className="lg:col-span-7">
+            <div className="relative mx-auto w-full max-w-[360px]">
+              <div aria-hidden className="animate-glow absolute -inset-6 rounded-[2.5rem] bg-indigo/30 blur-[70px]" />
+              <div className="relative aspect-[9/16] overflow-hidden rounded-3xl border border-line bg-ink shadow-[0_0_50px_rgb(99_102_241/0.35)]">
+                <iframe
+                  src="https://www.youtube-nocookie.com/embed/b_z9UYsnYbY?rel=0&playsinline=1"
+                  title="DEALSTORM 牌暴洗牌機實機影片"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                  className="absolute inset-0 h-full w-full"
+                />
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       {/* WHY */}
       <section id="why" className="mx-auto max-w-7xl scroll-mt-20 px-5 py-20 sm:px-8 md:py-28 lg:py-36">
