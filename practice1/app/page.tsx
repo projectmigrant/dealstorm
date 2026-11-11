@@ -297,6 +297,32 @@ export default function Home() {
             </div>
           </Reveal>
         </div>
+
+        {/* 解說影片（橫式） */}
+        <Reveal className="mt-20 md:mt-28">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <h3 className="text-2xl font-black leading-tight text-white sm:text-4xl">
+              完整解說：<span className="rgb-text">教你怎麼玩</span>
+            </h3>
+            <p className="max-w-sm text-white/55">
+              阿嬤、弟弟、表哥都不用再洗牌了。從放卡到開局，一支影片看懂牌暴。
+            </p>
+          </div>
+          <div className="relative mt-8">
+            <div aria-hidden className="animate-glow absolute inset-x-10 -bottom-6 h-1/2 rounded-full bg-violet/25 blur-[90px]" />
+            <div className="relative aspect-video overflow-hidden rounded-3xl border border-line bg-ink shadow-[0_0_50px_rgb(99_102_241/0.3)]">
+              <iframe
+                src="https://www.youtube-nocookie.com/embed/1lsMOqqGaF4?rel=0&playsinline=1"
+                title="DEALSTORM 牌暴解說影片：教你怎麼玩"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
+          </div>
+        </Reveal>
       </section>
 
       {/* WHY */}
